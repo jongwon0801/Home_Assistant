@@ -15,6 +15,7 @@ http://homeassistant.local:4357
 
 # 사용자 계정
 id : wikibox
+
 pw : wiki6564@
 ```
 
