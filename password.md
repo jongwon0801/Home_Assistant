@@ -14,4 +14,4 @@ http://homeassistant.local:8123
 http://homeassistant.local:4357
 ```
 
-<img src="https://github.com/user-attachments/assets/aa2cc58f-f628-4714-afc1-5ed304bd3307" width="300" height="200"/>
+<img src="https://github.com/user-attachments/assets/aa2cc58f-f628-4714-afc1-5ed304bd3307" width="500" height="500"/>
