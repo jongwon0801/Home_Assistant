@@ -13,9 +13,15 @@ http://homeassistant.local:8123
 # Observer URL
 http://homeassistant.local:4357
 
-# 사용자 계정
+# web 사용자 계정
 id : wikibox
 
 pw : wiki6564@
+
+# 터미널 계정
+user : root
+pw : 스노우트리
+
+
 ```
 
