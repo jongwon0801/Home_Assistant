@@ -1,0 +1,863 @@
+<div id="main">
+	<script type="text/javascript" src="/js/main.js?ver=7"></script>
+	<script type="text/javascript" src="/js/lamp.js?ver=7"></script>
+	<script type="text/javascript">
+		var isLights = 0;
+		var isGas = 0;
+		var isElevator = 0;
+		var isMirror = 0;
+		var isQr = 0;
+
+		var weather_dataset = {};
+		var schedule_dataset = {};
+		var notice_dataset = {};
+
+		$(document).ready(function () {
+			displayFootLeft();
+
+			ws.send('{"request":"weatherUpdate"}');
+			ws.send('{"request":"scheduleUpdate"}');
+			ws.send('{"request":"noticeUpdate"}');
+
+			clock();
+			// 최초에 함수를 한번 실행시켜주고 
+			setInterval(clock, 60000);
+		});
+
+		function displayFootLeft() {
+			console.log('--------------------------------- displayFootLeft --------------------------------');
+			console.log(settings);
+			if (settings.isUseLamp == undefined) settings.isUseLamp = true;
+			if (settings.isUseGas == undefined) settings.isUseGas = true;
+			if (settings.isUseEv == undefined) settings.isUseEv = true;
+			if (settings.isUseMirror == undefined) settings.isUseMirror = true;
+			if (settings.isUseBus == undefined) settings.isUseBus = true;
+
+			if (settings.isUseBus) requestBusStopList();
+			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleLights();return false;"><img src="/image/lights.png" alt="조명" /><p>조명</p></a></div>');
+			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleGas();return false;"><img src="/image/gas.png" alt="가스" /><p>가스</p></a></div>');
+			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleElevator();return false;"><img src="/image/elevator.png" alt="엘레베이터" /><p>엘레베이터</p></a></div>');
+			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
+		}
+
+		function requestBusStopList() {
+			if (settings.busRefresh == undefined) settings.busRefresh = 60;
+			ws.send('{"request":"busStopList"}');
+			setInterval(function () { ws.send('{"request":"busStopList"}'); }, settings.busRefresh * 1000);
+		}
+
+		function responseBusStopListByDataGoKr(data) {
+			wslog("responseBusStopListByDataGoKr start");
+			console.log(data);
+			let tag = '<ul>';
+			for (let i = 0; i < data.length; i++) {
+				tag += '<li>';
+				tag += '<label>' + data[i].bustype.replace('버스', '') + ' ' + data[i].lineno + '</label>';
+				tag += '<span>' + data[i].nodenm + '</span>';
+				tag += '<div>';
+				tag += '<table>';
+				tag += '<tr>';
+				tag += '<th>이번</th>';
+				tag += '<td>' + (data[i].seat1 > 0 ? '여유' : '혼잡') + '</td>';
+				tag += '<td>' + (data[i].station1 > 0 ? data[i].station1 + '정거장 전' : '도착예정') + '</td>';
+				tag += '<td>' + (data[i].min1 > 0 ? data[i].min1 + '분' : '곧도착') + '</td>';
+				tag += '</tr>';
+				tag += '<tr>';
+				tag += '<th>다음</th>';
+				tag += '<td>' + (data[i].seat2 > 0 ? '여유' : '혼잡') + '</td>';
+				tag += '<td>' + (data[i].station2 > 0 ? data[i].station2 + '정거장 전' : '도착예정') + '</td>';
+				tag += '<td>' + (data[i].min2 > 0 ? data[i].min2 + '분' : '곧도착') + '</td>';
+				tag += '</tr>';
+				tag += '</table>';
+				tag += '</div>';
+				tag += '</li>';
+			}
+
+			tag += '</ul>';
+
+			$('#busStopList').html(tag);
+		}
+
+		function responseBusStopList(data) {
+			wslog("responseBusStopList start");
+			console.log(data);
+			let tag = '';
+			data.forEach(element => {
+				tag += '<div>';
+				tag += '<label>' + element.name + '</label>';
+				tag += '<label>' + element.direction + ' 방향</label>';
+				tag += '</div>';
+				tag += '<ul>';
+				for (let i = 0; i < element.lists.length; i++) {
+					const obj = element.lists[i];
+
+					tag += '<li>';
+					tag += '<label>' + obj.type.shortName + ' ' + obj.name + '</label>';
+					tag += '<span>' + obj.direction + '</span>';
+					tag += '<div>';
+					tag += '<table>';
+					tag += '<tr>';
+					tag += '<th>이번</th>';
+					if (obj.arrival.buses.length > 0) {
+						if (obj.arrival.buses[0].remainingSeat == null) seat = "";
+						else if (obj.arrival.buses[0].remainingSeat > 0) seat = "여유";
+						else seat = "혼잡";
+
+						if (obj.arrival.buses[0].remainingStop == null) station = "";
+						else if (obj.arrival.buses[0].remainingStop > 0) station = obj.arrival.buses[0].remainingStop + "정거장 전";
+						else station = "도착예정";
+
+						if (obj.arrival.buses[0].remainingTime == null) min = "";
+						else if (obj.arrival.buses[0].remainingTime > 0) min = parseInt(obj.arrival.buses[0].remainingTime / 60) + "분";
+						else min = "곧도착";
+
+						tag += '<td>' + seat + '</td>';
+						tag += '<td>' + station + '</td>';
+						tag += '<td>' + min + '</td>';
+					} else {
+						tag += '<td></td>';
+						tag += '<td></td>';
+						tag += '<td></td>';
+					}
+					tag += '</tr>';
+					tag += '<tr>';
+					tag += '<th>다음</th>';
+					if (obj.arrival.buses.length > 1) {
+						if (obj.arrival.buses[1].remainingSeat == null) seat = "";
+						else if (obj.arrival.buses[1].remainingSeat > 0) seat = "여유";
+						else seat = "혼잡";
+
+						if (obj.arrival.buses[1].remainingStop == null) station = "";
+						else if (obj.arrival.buses[1].remainingStop > 0) station = obj.arrival.buses[0].remainingStop + "정거장 전";
+						else station = "도착예정";
+
+						if (obj.arrival.buses[1].remainingTime == null) min = "";
+						else if (obj.arrival.buses[1].remainingTime > 0) min = parseInt(obj.arrival.buses[0].remainingTime / 60) + "분";
+						else min = "곧도착";
+
+						tag += '<td>' + seat + '</td>';
+						tag += '<td>' + station + '</td>';
+						tag += '<td>' + min + '</td>';
+					} else {
+						tag += '<td></td>';
+						tag += '<td></td>';
+						tag += '<td></td>';
+					}
+					tag += '</tr>';
+					tag += '</table>';
+					tag += '</div>';
+					tag += '</li>';
+				}
+
+				tag += '</ul>';
+			});
+
+			$('#busStopList').html(tag);
+		}
+	</script>
+	<style>
+		#busStopList {
+			clear: both;
+			overflow: auto;
+			width: 100%;
+			max-height: calc(100vh - 820px);
+		}
+
+		#busStopList::-webkit-scrollbar {
+			width: 8px;
+			/* 스크롤바의 너비 */
+			background-color: transparent;
+			/* 스크롤바 배경을 투명하게 설정 */
+		}
+
+		#busStopList::-webkit-scrollbar-thumb {
+			background-color: rgba(0, 0, 0, 0.5);
+			/* 스크롤바의 색상과 투명도 설정 */
+			border-radius: 10px;
+			/* 스크롤바의 모서리를 둥글게 */
+		}
+
+		#busStopList>div {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: space-between;
+			align-items: center;
+			margin: 25px 0 5px 0;
+		}
+
+		#busStopList>div>label {
+			float: left;
+			font-size: 16pt;
+			font-weight: bold;
+			color: #FFF;
+		}
+
+		#busStopList>div>span {
+			float: right;
+			font-size: 14pt;
+			font-weight: normal;
+			color: #FFF;
+		}
+
+		#busStopList>ul {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#busStopList>ul>li {
+			border: 1px solid #FFF;
+			border-radius: 8px;
+			padding: 14px;
+			margin: 5px 0;
+			width: calc(100% - 30px);
+		}
+
+		#busStopList>ul>li>label {
+			float: left;
+			font-size: 16pt;
+			font-weight: bold;
+			color: #FFF;
+		}
+
+		#busStopList>ul>li>span {
+			float: right;
+			font-size: 16pt;
+			font-weight: bold;
+			color: #FFF;
+		}
+
+		#busStopList>ul>li>div {
+			clear: both;
+			overflow: hidden;
+		}
+
+		#busStopList>ul>li>div>table {
+			width: 100%;
+			margin-top: 15px;
+		}
+
+		#busStopList>ul>li>div>table th {
+			width: 25%;
+			white-space: nowrap;
+			text-align: left;
+			line-height: 25px;
+		}
+
+		#busStopList>ul>li>div>table td {
+			width: 25%;
+			white-space: nowrap;
+			line-height: 25px;
+		}
+
+		#busStopList>ul>li>div>table td:nth-child(2) {
+			text-align: center;
+		}
+
+		#busStopList>ul>li>div>table td:nth-child(3) {
+			text-align: center;
+		}
+
+		#busStopList>ul>li>div>table td:nth-child(4) {
+			text-align: right;
+		}
+
+		#header {
+			padding: 20px 40px;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-content: center;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		#header>a:nth-child(1) {
+			display: inline-block;
+		}
+
+		#header>a:nth-child(1) img {
+			height: 45px;
+		}
+
+		#header>div {
+			margin-left: -10vw;
+		}
+
+		#header>div>label {
+			font-size: 26px;
+			letter-spacing: -0.52px;
+			line-height: 24px;
+			margin-right: 16px;
+		}
+
+		#header>div>span {
+			font-family: "GmarketSansMedium";
+			font-size: 35px;
+			letter-spacing: -0.7px;
+			line-height: 56px;
+		}
+
+		#body {
+			height: calc(100vh - 100px);
+			padding-top: 60px;
+		}
+
+		#body>div:nth-child(1) {
+			float: left;
+			width: 420px;
+			margin-left: 40px;
+		}
+
+		#body>div:nth-child(2) {
+			float: right;
+			width: 420px;
+			margin-right: 40px;
+		}
+
+		#wifiIcon {
+			display: inline-block;
+			width: 38px;
+			height: 38px;
+			line-height: 38px;
+			border: 1px solid #ffffff;
+			border-radius: 50%;
+		}
+
+		#wifiIcon.off:before {
+			position: absolute;
+			content: 'x';
+			color: #FFF;
+			background: #FF0000;
+			width: 20px;
+			height: 20px;
+			line-height: 16px;
+			border-radius: 50%;
+			font-size: 9pt;
+			font-weight: bold;
+			font-family: tahoma;
+			margin: 20px 0 0 20px;
+		}
+	</style>
+	<div id="header">
+		<a href="#"><img src="/image/w_logo.png" alt="" /></a>
+		<div><label></label><span onclick="location.reload();"></span></div>
+		<a id="wifiIcon" href="#" onclick="$('#loading').show();requestWifies();return false"><img src="/image/wifi.png"
+				alt="" /></a>
+		<!--a href="#" onclick="setupBle();return false"><img src="/image/ble.png" alt=""/></a-->
+	</div>
+	<div id="body">
+		<div>
+			<style>
+				#weather {
+					clear: both;
+					overflow: hidden;
+					width: 420px;
+				}
+
+				#weather>table:nth-child(1)>tbody>tr>td {
+					width: 50%;
+				}
+
+				#weather>table:nth-child(1)>tbody>tr:nth-child(1)>td:nth-child(2) {
+					font-size: 21px;
+					letter-spacing: -0.42px;
+					line-height: 24px;
+					font-family: "GmarketSansMedium";
+				}
+
+				#weather>table:nth-child(1)>tbody>tr:nth-child(2)>td:nth-child(2) {
+					font-size: 66px;
+					letter-spacing: -1.32px;
+					line-height: 74px;
+					font-family: "GmarketSansLight";
+				}
+
+				#weather>table:nth-child(1)>tbody>tr:nth-child(3)>td:nth-child(2) {
+					font-size: 17px;
+					letter-spacing: -0.34px;
+					line-height: 24px;
+					font-family: "GmarketSansLight";
+				}
+
+				#weather>table:nth-child(1)>tbody>tr:nth-child(4)>td {
+					padding-top: 10px;
+				}
+
+				#weather>table:nth-child(1)>tbody>tr:nth-child(4)>td:nth-child(1) {
+					font-size: 21px;
+					letter-spacing: -0.42px;
+					line-height: 24px;
+					font-family: "GmarketSansLight";
+				}
+
+				#weather>table:nth-child(1)>tbody>tr:nth-child(4)>td:nth-child(2) {
+					font-size: 17px;
+					letter-spacing: -0.34px;
+					line-height: 24px;
+					font-family: "GmarketSansLight";
+				}
+
+				#weather>ul {
+					clear: both;
+					overflow: hidden;
+					border: 1px solid #fff;
+					border-radius: 8px;
+					padding: 10px 20px;
+					margin-top: 50px;
+				}
+
+				#weather>ul>li {
+					float: left;
+					width: calc(50% - 10px);
+				}
+
+				#weather>ul>li:nth-child(2) {
+					float: right;
+				}
+
+				#weather>ul>li label {
+					float: left;
+					font-size: 14px;
+					letter-spacing: -0.28px;
+					line-height: 25px;
+					padding-top: 3px;
+				}
+
+				#weather>ul>li span {
+					float: right;
+					display: inline-block;
+					width: 80px;
+					line-height: 25px;
+					color: #FFF;
+					font-size: 14px;
+					letter-spacing: -0.28px;
+					line-height: 24px;
+					border-radius: 4px;
+					padding-top: 3px;
+				}
+
+				#weather>ul>li span.green {
+					background: #4FBB7E;
+				}
+
+				#weather>ul>li span.red {
+					background: #FF4646;
+				}
+
+				#weather>ul>li span.red {
+					background: #FF4646;
+				}
+
+				#weather>table:nth-child(3) {
+					clear: both;
+					overflow: hidden;
+					width: 100%;
+				}
+
+				#weather>table:nth-child(3)>tbody>tr>td:nth-child(1) {
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 24px;
+					padding: 25px 0 25px 20px;
+					text-align: left;
+				}
+
+				#weather>table:nth-child(3)>tbody>tr>td:nth-child(2) {
+					width: 70px;
+					height: 70px;
+					text-align: center;
+				}
+
+				#weather>table:nth-child(3)>tbody>tr>td:nth-child(2) img {
+					width: 100%;
+					height: 100%;
+				}
+
+				#weather>table:nth-child(3)>tbody>tr>td:nth-child(3) {
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 24px;
+					padding: 25px 20px 25px 0;
+					text-align: right;
+				}
+			</style>
+			<div id="weather">
+				<table>
+					<tr>
+						<td></td>
+						<td><img src="/image/place.png" alt="" /></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+				<ul>
+					<li><label>미세먼지</label><span></span></li>
+					<li><label>초미세먼지</label><span></span></li>
+				</ul>
+				<table>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+				<div id="busStopList"></div>
+			</div>
+		</div>
+		<div>
+			<style>
+				#schedule {
+					clear: both;
+					overflow: hidden;
+				}
+
+				#schedule h1 {
+					font-size: 21px;
+					letter-spacing: -0.42px;
+					line-height: 30px;
+					margin-bottom: 15px;
+					text-align: center;
+				}
+
+				#schedule table {
+					width: 100%;
+				}
+
+				#schedule table thead th {
+					width: 60px;
+					height: 60px;
+				}
+
+				#schedule table tbody th {
+					width: 60px;
+					height: 60px;
+				}
+
+				#schedule table tbody td {
+					width: 60px;
+					height: 60px;
+				}
+
+				#schedule table tbody th span {
+					display: inline-block;
+					font-family: "GmarketSansLight";
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 32px;
+					color: #FFFFFF;
+					width: 32px;
+					height: 32px;
+				}
+
+				#schedule table tbody th span.out {
+					color: #A1A1A1;
+				}
+
+				#schedule table tbody th span.over {
+					background: url(/image/icon/point_FF803E.png) no-repeat;
+					background-position: right top;
+				}
+
+				#schedule table tbody th span.today {
+					font-family: "GmarketSansMedium";
+					color: #27A1DC;
+					border-radius: 50%;
+					border: 2px solid #27A1DC;
+				}
+
+				#dailySchedule {
+					clear: both;
+					overflow: hidden;
+					margin-top: 20px;
+				}
+
+				#dailySchedule>div {
+					display: table-cell;
+					float: left;
+					width: 65px;
+					border-right: 1px solid #FFF;
+				}
+
+				#dailySchedule>div>h1 {
+					color: #27A1DC;
+					font-size: 35px;
+					letter-spacing: -0.7px;
+					line-height: 60px;
+					text-align: center;
+				}
+
+				#dailySchedule>div>h2 {
+					color: #FFFFFF;
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 24px;
+					text-align: center;
+				}
+
+				#dailySchedule>ul {
+					display: table-cell;
+					float: right;
+					width: calc(100% - 85px);
+				}
+
+				#dailySchedule>ul>li {
+					clear: both;
+					overflow: hidden;
+					border: 1px solid #FFF;
+					border-radius: 8px;
+					padding: 15px 20px;
+					margin-bottom: 10px;
+				}
+
+				#dailySchedule>ul>li:last-child {
+					margin-bottom: 0;
+				}
+
+				#dailySchedule>ul>li>label {
+					float: left;
+					color: #FFFFFF;
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 24px;
+				}
+
+				#dailySchedule>ul>li>span {
+					display: none;
+					float: right;
+					color: #FFFFFF;
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 24px;
+				}
+			</style>
+			<div id="schedule"></div>
+			<div id="dailySchedule"></div>
+			<style>
+				#notice {
+					clear: both;
+					overflow: hidden;
+					margin-top: 20px;
+				}
+
+				#notice>h1 {
+					color: #FFFFFF;
+					font-size: 21px;
+					letter-spacing: -0.42px;
+					line-height: 30px;
+					margin-bottom: 10px;
+				}
+
+				#notice>ul {
+					clear: both;
+					overflow: hidden;
+				}
+
+				#notice>ul>li {
+					clear: both;
+					overflow: hidden;
+					padding: 20px;
+					border: 1px solid #FFF;
+					border-radius: 8px;
+					color: #FFFFFF;
+					font-size: 18px;
+					letter-spacing: -0.36px;
+					line-height: 30px;
+					margin-bottom: 10px;
+				}
+			</style>
+			<div id="notice">
+			</div>
+		</div>
+		<style>
+			#mirror {
+				display: none;
+				clear: both;
+				overflow: hidden;
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: 100vw;
+				height: 100vh;
+				background: #000000;
+				z-index: 2;
+			}
+
+			#mirror div {
+				position: fixed;
+				left: 40px;
+				bottom: 60px;
+			}
+		</style>
+		<div id="mirror">
+			<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /></a></div>
+		</div>
+	</div>
+	<style>
+		#foot {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100vw;
+		}
+
+		#foot>div>div {
+			clear: both;
+			overflow: hidden;
+			width: 98px;
+			height: 78px;
+			margin-bottom: 40px;
+			border: 1px solid #666;
+			background: rgba(0, 0, 0, 0.1);
+			text-align: center;
+			border-radius: 8px;
+			padding: 15px 0 5px 0;
+		}
+
+		#foot>div>div>p {
+			line-height: 20px;
+			margin-top: 10px;
+		}
+
+		#foot>div>div:last-child {
+			margin-bottom: 0;
+		}
+
+		#foot_left {
+			float: right;
+			padding: 0 40px 60px 0;
+		}
+
+		#foot_right {
+			float: right;
+			padding: 0 40px 60px 0;
+		}
+	</style>
+	<div id="foot">
+		<div id="foot_right">
+			<div><a href="/user/list?ver=2" target="dialog"><img src="/image/user.png" alt="사용자" /></a>
+				<p>사용자</p>
+			</div>
+			<div><a href="#" onclick="outCameraView();return false;" target=""><img src="/image/camera.png" alt="외부카메라" />
+					<p>외부카메라</p>
+				</a></div>
+			<div><a href="/vod/folders?ver=6" target="dialog"><img src="/image/vod.png" alt="녹화영상" /></a>
+				<p>녹화영상</p>
+			</div>
+			<div><a href="" onclick="toggleQr();return false;"><img src="/image/qr.png" alt="APP연결" /></a>
+				<p>APP연결</p>
+			</div>
+		</div>
+		<div id="foot_left"></div>
+	</div>
+	<style>
+		#qr {
+			display: none;
+			clear: both;
+			overflow: hidden;
+			position: fixed;
+			left: 0;
+			top: 0;
+			width: 100vw;
+			height: 100vh;
+			background: #2B2B2B;
+			text-align: center;
+			z-index: 2;
+		}
+
+		#qr>div:nth-child(1) {
+			clear: both;
+			overflow: hidden;
+			margin-top: calc(50vh - 399px);
+		}
+
+		#qr>div:nth-child(2) {
+			clear: both;
+			overflow: hidden;
+			width: 400px;
+			font-size: 28px;
+			letter-spacing: -0.56px;
+			line-height: 50px;
+			margin: 60px calc(50% - 200px) 0 calc(50% - 200px);
+		}
+
+		#qr>div:nth-child(3) {
+			clear: both;
+			overflow: hidden;
+			margin-top: 90px;
+		}
+
+		#qr>div:nth-child(4) {
+			clear: both;
+			overflow: hidden;
+			margin-top: 140px;
+		}
+
+		#qr>div:nth-child(4) a {
+			display: inline-block;
+			width: 238px;
+			border: 1px solid #FFF;
+			border-radius: 30px;
+			background: #5B5B5B;
+			color: #FFF;
+			font-size: 21px;
+			letter-spacing: -0.42px;
+			line-height: 24px;
+			padding: 12px 0;
+		}
+	</style>
+	<script>
+		var isQr = 0;
+
+		function toggleQr() {
+			if (isQr == 0) {
+				ws.send('{"request":"generateQRCode"}');
+				$('#loading').show();
+			} else {
+				$('#qr').hide();
+				isQr = 0;
+			}
+		}
+
+		function showQr() {
+			$('#loading').hide();
+			let src = "/image/qrcode.png?ver=" + Date.now();
+			let tag = '<img src="' + src + '" alt="">';
+			//alert(src);
+			$('#qr > div:nth-child(3)').html(tag);
+			$('#qr').show();
+			isQr = 1;
+		}
+	</script>
+	<div id="qr">
+		<div><img src="/image/ci.png" alt="" style="width:60%;" /></div>
+		<div>제품 등록 대기중입니다. 와이즈몬스터 APP을 설치하신 뒤 회원가입 후 하단의 QR코드를 통해 제품 등록을 진행해주세요.</div>
+		<div></div>
+		<div><a href="#" onclick="toggleQr();return false;">닫기</a></div>
+	</div>
