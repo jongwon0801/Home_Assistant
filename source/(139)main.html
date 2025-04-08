@@ -1,9 +1,9 @@
 <div id="main">
   	<script type="text/javascript" src="/js/lamp.js?ver=7"></script>
+	<script type="text/javascript" src="/js/curtain.js?ver=7"></script>
 	<script type="text/javascript" src="/js/main.js?ver=7"></script>
 	<script type="text/javascript">
 		var isLights = 0;
-		var isGas = 0;
 		var isElevator = 0;
 		var isMirror = 0;
 		var isQr = 0;
@@ -27,18 +27,32 @@
 		function displayFootLeft() {
 			console.log('--------------------------------- displayFootLeft --------------------------------');
 			console.log(settings);
+		
+			// 기본값 지정
 			if (settings.isUseLamp == undefined) settings.isUseLamp = true;
-			if (settings.isUseGas == undefined) settings.isUseGas = true;
+			if (settings.isUseCurtain == undefined) settings.isUseCurtain = true;
 			if (settings.isUseEv == undefined) settings.isUseEv = true;
 			if (settings.isUseMirror == undefined) settings.isUseMirror = true;
 			if (settings.isUseBus == undefined) settings.isUseBus = true;
-
+		
 			if (settings.isUseBus) requestBusStopList();
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleLights();return false;"><img src="/image/lights.png" alt="조명" /><p>조명</p></a></div>');
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleGas();return false;"><img src="/image/gas.png" alt="가스" /><p>가스</p></a></div>');
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleElevator();return false;"><img src="/image/elevator.png" alt="엘레베이터" /><p>엘레베이터</p></a></div>');
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
+		
+			// 각 기능별로 분리해서 표시
+			if (settings.isUseLamp) {
+				$('#foot_left').append('<div><a href="#" onclick="toggleLights();return false;"><img src="/image/lights.png" alt="조명" /><p>조명</p></a></div>');
+			}
+			if (settings.isUseCurtain) {
+				$('#foot_left').append('<div><a href="#" onclick="toggleCurtain();return false;"><img src="/image/curtain.png" alt="커튼" /><p>커튼</p></a></div>');
+			}
+			if (settings.isUseEv) {
+				$('#foot_left').append('<div><a href="#" onclick="toggleElevator();return false;"><img src="/image/elevator.png" alt="엘리베이터" /><p>엘리베이터</p></a></div>');
+			}
+			if (settings.isUseMirror) {
+				$('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
+			}
+			
 		}
+
 
 		function requestBusStopList() {
 			if (settings.busRefresh == undefined) settings.busRefresh = 60;
