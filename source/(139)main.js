@@ -246,10 +246,10 @@ async function toggleLights() {
       return;
 		}
 		
-		isGas = status.isOn;
+		isLights = status.isOn;
 
     let result;
-    if (isGas) {
+    if (isLights) {
 			result = await turnOffLamp();
 			$.toast({
 				text : "조명이 커졌습니다.", 
@@ -262,7 +262,7 @@ async function toggleLights() {
 				textAlign : 'center',
 				position : 'bottom-center'
 			});
-			isGas = 0;
+			isLights = 0;
     } else {
 			result = await turnOnLamp();
 			$.toast({
@@ -276,7 +276,7 @@ async function toggleLights() {
 				textAlign : 'center',
 				position : 'bottom-center'
 			});
-			isGas = 1;
+			isLights = 1;
     }
 
     if (result.result) {
