@@ -321,49 +321,60 @@ function toggleElevator() {
 	}
 }
 
-var isCurtain = 0;
+async function toggleCurtain() {
+  $('.jq-toast-single').hide(); // 기존 토스트 숨김
 
-function toggleCurtain() {
-	$('.jq-toast-single').hide(); // 기존 토스트 숨김
+  const statusData = await getCurtainStatus();
+  if (!statusData) return;
 
-	if (isCurtain === 0) {
-		// 커튼 열기
-		$.toast({
-			text : "커튼을 열었습니다.",
-			showHideTransition : 'slide',
-			bgColor : '#3CB371',
-			textColor : '#ffffff',
-			allowToastClose : false,
-			hideAfter : 3000,
-			stack : 5,
-			textAlign : 'center',
-			position : 'bottom-center'
-		});
+  const state = statusData.state;
 
-		// 여기에 커튼 열기 동작 (예: API 호출)
-		openCurtain();
+  if (state === "opening" || state === "closing") {
+    $.toast({
+      text: "커튼 동작 중입니다. 잠시만 기다려주세요.",
+      showHideTransition: 'fade',
+      bgColor: '#FFA500',
+      textColor: '#ffffff',
+      allowToastClose: false,
+      hideAfter: 3000,
+      stack: 5,
+      textAlign: 'center',
+      position: 'bottom-center'
+    });
+    return; // 명령 보내지 않음
+  }
 
-		isCurtain = 1;
-	} else {
-		// 커튼 닫기
-		$.toast({
-			text : "커튼을 닫았습니다.",
-			showHideTransition : 'slide',
-			bgColor : '#4682B4',
-			textColor : '#ffffff',
-			allowToastClose : false,
-			hideAfter : 3000,
-			stack : 5,
-			textAlign : 'center',
-			position : 'bottom-center'
-		});
-
-		// 여기에 커튼 닫기 동작 (예: API 호출)
-		closeCurtain();
-
-		isCurtain = 0;
-	}
+  if (state === "open") {
+    await closeCurtain();
+    $.toast({
+      text: "커튼을 닫았습니다.",
+      showHideTransition: 'slide',
+      bgColor: '#4682B4',
+      textColor: '#ffffff',
+      allowToastClose: false,
+      hideAfter: 3000,
+      stack: 5,
+      textAlign: 'center',
+      position: 'bottom-center'
+    });
+  } else if (state === "closed") {
+    await openCurtain();
+    $.toast({
+      text: "커튼을 열었습니다.",
+      showHideTransition: 'slide',
+      bgColor: '#3CB371',
+      textColor: '#ffffff',
+      allowToastClose: false,
+      hideAfter: 3000,
+      stack: 5,
+      textAlign: 'center',
+      position: 'bottom-center'
+    });
+  } else {
+    console.warn("알 수 없는 커튼 상태:", state);
+  }
 }
+
 
 
 
