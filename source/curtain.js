@@ -85,10 +85,3 @@ const debouncedSetCurtainPosition = debounce((value) => {
   setCurtainPosition(value);
 }, 500); // 500ms 후 요청
 
-$(document).ready(function () {
-  $('#curtain-slider').on('input', function () {
-    const value = parseInt($(this).val());
-    $('#curtain-value').text(`${value}%`);
-    debouncedSetCurtainPosition(value);
-  });
-});
