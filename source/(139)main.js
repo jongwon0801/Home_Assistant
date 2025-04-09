@@ -252,7 +252,7 @@ async function toggleLights() {
     if (isLights) {
 			result = await turnOffLamp();
 			$.toast({
-				text : "조명이 커졌습니다.", 
+				text : "조명이 꺼졌습니다.", 
 				showHideTransition : 'slide',
 				bgColor : '#000000',
 				textColor : '#ffffff',
