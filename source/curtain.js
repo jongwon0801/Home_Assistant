@@ -16,6 +16,38 @@ async function closeCurtain() {
   });
 }
 
+// 특정 퍼센트로 설정
+async function setCurtainPosition(position) {
+  return await sendCurtainCommand("/api/services/cover/set_cover_position", {
+    entity_id: CURTAIN_ENTITY_ID,
+    position: position
+  });
+}
+
+// 상태 조회
+async function getCurtainStatus() {
+  try {
+    const response = await fetch(`${HOME_ASSISTANT_URL}/api/states/${CURTAIN_ENTITY_ID}`, {
+      headers: {
+        Authorization: AUTH_TOKEN,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("커튼 상태:", data);
+      return data;
+    } else {
+      console.error("커튼 상태 조회 실패:", response.status);
+      return null;
+    }
+  } catch (error) {
+    console.error("에러 발생:", error);
+    return null;
+  }
+}
+
 // 커튼 제어 API 호출 함수
 async function sendCurtainCommand(endpoint, body) {
   try {
@@ -36,3 +68,19 @@ async function sendCurtainCommand(endpoint, body) {
     return { result: false, message: "오류 발생" };
   }
 }
+
+// debounce 유틸
+function debounce(func, delay) {
+  let timeoutId;
+  return function (...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
+// 슬라이더 조절 시 debounce로 요청
+const debouncedSetCurtainPosition = debounce((value) => {
+  setCurtainPosition(value);
+}, 500); // 500ms 후 요청
