@@ -321,6 +321,7 @@ function toggleElevator() {
 	}
 }
 
+
 async function toggleCurtain() {
   $('.jq-toast-single').hide(); // 기존 토스트 숨김
 
@@ -329,25 +330,10 @@ async function toggleCurtain() {
 
   const state = statusData.state;
 
-  if (state === "opening" || state === "closing") {
-    $.toast({
-      text: "커튼 동작 중입니다. 잠시만 기다려주세요.",
-      showHideTransition: 'fade',
-      bgColor: '#FFA500',
-      textColor: '#ffffff',
-      allowToastClose: false,
-      hideAfter: 3000,
-      stack: 5,
-      textAlign: 'center',
-      position: 'bottom-center'
-    });
-    return; // 명령 보내지 않음
-  }
-
   if (state === "open") {
     await closeCurtain();
     $.toast({
-      text: "커튼을 닫았습니다.",
+      text: "커튼을 닫는 중입니다.",
       showHideTransition: 'slide',
       bgColor: '#4682B4',
       textColor: '#ffffff',
@@ -360,7 +346,7 @@ async function toggleCurtain() {
   } else if (state === "closed") {
     await openCurtain();
     $.toast({
-      text: "커튼을 열었습니다.",
+      text: "커튼을 여는 중입니다.",
       showHideTransition: 'slide',
       bgColor: '#3CB371',
       textColor: '#ffffff',
@@ -374,6 +360,7 @@ async function toggleCurtain() {
     console.warn("알 수 없는 커튼 상태:", state);
   }
 }
+
 
 
 
