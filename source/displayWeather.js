@@ -17,20 +17,6 @@ function displayWeather() {
 		weather_dataset.currentTemperature + '˚'
 	);
 	
-	// // 최고 기온 → tr 3번째, td 2번째 칸
-	// $('#weather > table:nth-child(1) > tbody > tr:nth-child(3) > td:nth-child(2)').html(
-	// 	'최고 ' + Math.round(weather_dataset.maxTemperature / 100) + '˚'
-	// );
-	
-	// // 날씨 상태 (흐림, 맑음 등) → tr 4번째, td 1번째 칸
-	// $('#weather > table:nth-child(1) > tbody > tr:nth-child(4) > td:nth-child(1)').html(
-	// 	weather_dataset.sky
-	// );
-	
-	// // 최저 기온 → tr 4번째, td 2번째 칸
-	// $('#weather > table:nth-child(1) > tbody > tr:nth-child(4) > td:nth-child(2)').html(
-	// 	'최저 ' + Math.round(weather_dataset.minTemperature / 10) + '˚'
-	// );
 
 	// 최고/최저 기온 계산
 	const maxTemp = Math.round(weather_dataset.maxTemperature / 100);
