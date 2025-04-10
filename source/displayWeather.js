@@ -16,11 +16,6 @@ function displayWeather() {
 	$('#weather > table:nth-child(1) > tbody > tr:nth-child(2) > td:nth-child(2)').html(
 		weather_dataset.currentTemperature + '˚'
 	);
-
-
-	// 최고/최저 기온 계산
-	const maxTemp = Math.round(weather_dataset.maxTemperature / 100);
-	const minTemp = Math.round(weather_dataset.minTemperature / 10);
 	
 	// 최고 기온 → tr 3번째, td 2번째 칸
 	$('#weather > table:nth-child(1) > tbody > tr:nth-child(3) > td:nth-child(2)').html(
