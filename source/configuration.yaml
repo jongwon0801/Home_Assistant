@@ -7,10 +7,10 @@ frontend:
 
 http:
   cors_allowed_origins:
-    - "http://192.168.0.139"
+    - "http://192.168.0.3"
     - "http://127.0.0.1"
     - "http://localhost"
-    - "http://192.168.0.161"  # 추가된 항목 # 192.168.0.42 추가해야함
+    - "http://192.168.0.42"  # 추가된 항목
 
 automation: !include automations.yaml
 script: !include scripts.yaml
