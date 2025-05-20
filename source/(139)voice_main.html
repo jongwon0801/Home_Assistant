@@ -60,23 +60,36 @@
 
     if ($('#modal').length === 0) {
         $('body').append(`
+            <style>
+                @keyframes bounce {
+                    0%, 100% { transform: scaleY(1); }
+                    50% { transform: scaleY(1.8); }
+                }
+                .bar {
+                    animation-name: bounce;
+                    animation-duration: 1s;
+                    animation-iteration-count: infinite;
+                    animation-timing-function: ease-in-out;
+                }
+            </style>
             <div id="modal" style="display:none;position:fixed;z-index:999;top:0;left:0;
                 width:100%;height:100%;background-color:rgba(0,0,0,0.5);backdrop-filter:blur(3px);">
                 <div class="modal-content" style="background-color:white;margin:100px auto;padding:40px 20px;
                     border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 25px rgba(0, 0, 0, 0.3);">
                     <div class="visualizer" style="display:flex;justify-content:center;align-items:end;height:60px;gap:6px;margin-bottom:20px;">
-                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;"></div>
-                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;animation-delay:0.2s;"></div>
-                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;animation-delay:0.4s;"></div>
-                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;animation-delay:0.2s;"></div>
-                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation-delay:0s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation-delay:0.2s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation-delay:0.4s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation-delay:0.2s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation-delay:0s;"></div>
                     </div>
-                    <div id="status" style="font-size:1.1em;margin-top:10px;">🎙️ 녹음 중...</div>
+                    <div id="status" style="font-size:1.1em;margin-top:10px;">녹음 중...</div>
                 </div>
             </div>
         `);
     }
 }
+
 
 
     // 거울 버튼 (음성 뒤에 오도록 위치 조정)
