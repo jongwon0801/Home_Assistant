@@ -14,8 +14,8 @@ async function startVoiceProcess() {
         mediaRecorder.onstop = async () => {
             if (audioChunks.length === 0) {
                 status.textContent = "녹음된 음성이 없습니다.";
-                alert("음성이 녹음되지 않았습니다. 다시 시도해주세요.");
                 modal.style.display = "none";
+                alert("음성이 녹음되지 않았습니다. 다시 시도해주세요.");
                 stream.getTracks().forEach(track => track.stop());
                 return;
             }
@@ -46,8 +46,8 @@ async function startVoiceProcess() {
                 } catch (parseError) {
                     console.error("JSON 파싱 실패:", parseError);
                     status.textContent = "음성 인식 결과 처리 중 오류 발생.";
-                    alert("응답 파싱 중 오류가 발생했습니다.");
                     modal.style.display = "none";
+                    alert("응답 파싱 중 오류가 발생했습니다.");
                     stream.getTracks().forEach(track => track.stop());
                     return;
                 }
@@ -76,19 +76,19 @@ async function startVoiceProcess() {
                     console.log("도어 응답 내용:", doorResult);
 
                     setTimeout(() => {
-                        alert("문이 열렸습니다.");
                         modal.style.display = "none";
+                        alert("문이 열렸습니다.");
                     }, 500);
                 } else {
                     console.log("명령어가 감지되지 않음");
-                    alert("'문 열어' 같은 명령이 감지되지 않았습니다.");
                     modal.style.display = "none";
+                    alert("문 여는 명령이 감지되지 않았습니다.");
                 }
 
             } catch (apiError) {
                 console.error("OpenAI 또는 도어 API 호출 중 오류:", apiError);
-                alert("음성 인식 중 오류가 발생했습니다.");
                 modal.style.display = "none";
+                alert("음성 인식 중 오류가 발생했습니다.");
             }
 
             stream.getTracks().forEach(track => track.stop());
@@ -100,8 +100,8 @@ async function startVoiceProcess() {
     } catch (error) {
         console.error("마이크 접근 오류:", error);
         status.textContent = "마이크 사용 권한이 필요합니다.";
-        alert("마이크 권한을 허용해야 합니다.");
         modal.style.display = "none";
+        alert("마이크 권한을 허용해야 합니다.");
     }
 }
 
