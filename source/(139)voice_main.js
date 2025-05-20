@@ -316,9 +316,8 @@ async function toggleLights() {
 
 // 음성 명령
 function toggleVoice() {
-    // 모달과 스타일이 없으면 생성
+    // 모달이 없으면 생성
     if ($('#modal').length === 0) {
-        // 모달 HTML 추가
         $('body').append(`
             <div id="modal">
                 <div class="modal-content">
@@ -332,67 +331,75 @@ function toggleVoice() {
                     <div id="status">🎙️ 녹음 중...</div>
                 </div>
             </div>
-            <style id="modal-style">
-                #modal {
-                    display: none;
-                    position: fixed;
-                    z-index: 999;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    background-color: rgba(0,0,0,0.5);
-                    backdrop-filter: blur(3px);
-                }
-                .modal-content {
-                    background-color: white;
-                    margin: 100px auto;
-                    padding: 40px 20px;
-                    border-radius: 12px;
-                    width: 300px;
-                    text-align: center;
-                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-                }
-                .visualizer {
-                    display: flex;
-                    justify-content: center;
-                    align-items: flex-end;
-                    height: 60px;
-                    gap: 6px;
-                    margin-bottom: 20px;
-                }
-                .bar {
-                    width: 10px;
-                    background-color: #5a5aff;
-                    border-radius: 5px;
-                    animation: bounce 1s infinite ease-in-out;
-                }
-                .bar:nth-child(1) { animation-delay: 0s; }
-                .bar:nth-child(2) { animation-delay: 0.2s; }
-                .bar:nth-child(3) { animation-delay: 0.4s; }
-                .bar:nth-child(4) { animation-delay: 0.2s; }
-                .bar:nth-child(5) { animation-delay: 0s; }
-                @keyframes bounce {
-                    0%, 100% { height: 10px; }
-                    50% { height: 60px; }
-                }
-                #status {
-                    font-size: 1.1em;
-                    margin-top: 10px;
-                }
-            </style>
         `);
+
+        // 스타일 삽입 (최초 1회만)
+        if ($('#modal-style').length === 0) {
+            $('head').append(`
+                <style id="modal-style">
+                    #modal {
+                        display: none;
+                        position: fixed;
+                        z-index: 999;
+                        top: 0; left: 0;
+                        width: 100%; height: 100%;
+                        background-color: rgba(0,0,0,0.5);
+                        backdrop-filter: blur(3px);
+                    }
+                    .modal-content {
+                        background-color: white;
+                        margin: calc(50vh - 180px) auto;
+                        padding: 50px 30px;
+                        border-radius: 16px;
+                        width: 380px;
+                        text-align: center;
+                        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+                        font-size: 1.2em;
+                    }
+                    .visualizer {
+                        display: flex;
+                        justify-content: center;
+                        align-items: flex-end;
+                        height: 80px;
+                        gap: 8px;
+                        margin-bottom: 25px;
+                    }
+                    .bar {
+                        width: 12px;
+                        background-color: #5a5aff;
+                        border-radius: 6px;
+                        animation: bounce 1s infinite ease-in-out;
+                    }
+                    .bar:nth-child(1) { animation-delay: 0s; }
+                    .bar:nth-child(2) { animation-delay: 0.2s; }
+                    .bar:nth-child(3) { animation-delay: 0.4s; }
+                    .bar:nth-child(4) { animation-delay: 0.2s; }
+                    .bar:nth-child(5) { animation-delay: 0s; }
+                    @keyframes bounce {
+                        0%, 100% { height: 12px; }
+                        50% { height: 70px; }
+                    }
+                    #status {
+                        font-size: 1.3em;
+                        margin-top: 15px;
+                    }
+                </style>
+            `);
+        }
     }
 
-    // 모달 표시
+    // 모달 보여주기
     $('#modal').fadeIn(200);
 
-    // 음성 처리 시작 함수 호출 (예시)
+    // 음성 처리 시작 (사용자 정의 함수)
     startVoiceProcess();
 
-    // 5초 후 모달 닫기
+    // 일정 시간 후 자동 닫기 (예시: 5초 후)
     setTimeout(() => {
         $('#modal').fadeOut(200);
     }, 5000);
 }
+
 
 
 
