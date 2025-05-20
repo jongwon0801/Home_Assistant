@@ -314,10 +314,90 @@ async function toggleLights() {
   }
 }
 
-// main.js
+// 음성 명령
 function toggleVoice() {
-    // voice.js에 정의된 startVoiceProcess 함수 호출
+    // 모달이 없으면 생성
+    if ($('#modal').length === 0) {
+        $('body').append(`
+            <div id="modal">
+                <div class="modal-content">
+                    <div class="visualizer">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <div id="status">🎙️ 녹음 중...</div>
+                </div>
+            </div>
+        `);
+
+        // 모달 스타일은 CSS에 따로 넣는 게 좋음 (아래 CSS 참고)
+    }
+
+    // 모달 표시
+    $('#modal').fadeIn(200);
+
+    // 예시: 음성 처리 시작 함수 호출
     startVoiceProcess();
+
+    // 예시: 5초 후 모달 닫기 (음성처리 끝났을 때 적절히 호출)
+    setTimeout(() => {
+        $('#modal').fadeOut(200);
+    }, 5000);
+}
+
+#modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 100px auto;
+    padding: 40px 20px;
+    border-radius: 12px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    height: 60px;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.bar {
+    width: 10px;
+    background-color: #5a5aff;
+    border-radius: 5px;
+    animation: bounce 1s infinite ease-in-out;
+}
+
+.bar:nth-child(1) { animation-delay: 0s; }
+.bar:nth-child(2) { animation-delay: 0.2s; }
+.bar:nth-child(3) { animation-delay: 0.4s; }
+.bar:nth-child(4) { animation-delay: 0.2s; }
+.bar:nth-child(5) { animation-delay: 0s; }
+
+@keyframes bounce {
+    0%, 100% { height: 10px; }
+    50% { height: 60px; }
+}
+
+#status {
+    font-size: 1.1em;
+    margin-top: 10px;
 }
 
 
