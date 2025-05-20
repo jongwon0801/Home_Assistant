@@ -47,34 +47,11 @@
     // 커튼 버튼
     if (settings.isUseCurtain)
         $('#foot_left').append('<div><a href="#" onclick="toggleCurtain();return false;"><img src="/image/curtain.png" alt="커튼" /><p>커튼</p></a></div>');
-
-    if (settings.isUseVoice) {
-    $('#foot_left').append(`
-        <div>
-            <a href="#" onclick="toggleVoice(); return false;">
-                <img src="/image/voice.png" alt="음성" />
-                <p>음성</p>
-            </a>
-        </div>
-    `);
-
-    if ($('#modal').length === 0) {
-        $('body').append(`
-            <div id="modal" style="display:none;position:fixed;z-index:999;top:0;left:0;
-                width:100%;height:100%;background-color:rgba(0,0,0,0.5);backdrop-filter:blur(3px);">
-                <div class="modal-content" style="background-color:white;color:black;margin:100px auto;padding:30px 20px;
-                    border-radius:10px;width:280px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.2);">
-                    <div id="status" style="font-size:1.2em;">처리 중...</div>
-                </div>
-            </div>
-        `);
-    }
-}
-
-
-
-
-
+    
+    // 음성 입력
+    if (settings.isUseVoice) 
+    $('#foot_left').append(`<div><a href="#" onclick="toggleVoice(); return false;"><img src="/image/voice.png" alt="음성" /><p>음성</p></a></div>`);
+    
     // 거울 버튼 (음성 뒤에 오도록 위치 조정)
     if (settings.isUseMirror)
         $('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
