@@ -56,7 +56,7 @@ async function startVoiceProcess() {
                 console.log("변환된 텍스트:", text);
                 status.textContent = `인식된 내용: ${text}`;
 
-                if (["문 열", "열어", "열"].some(trigger => text.includes(trigger))) {
+                if (["open", "open the door", "openthedoor", "please open", "open up", "open door"].some(trigger => text.includes(trigger))) {
                     status.textContent = "문을 여는 중...";
                     console.log("'문 열어' 명령 감지됨, 도어 API 호출 시작");
 
