@@ -48,37 +48,36 @@
     if (settings.isUseCurtain)
         $('#foot_left').append('<div><a href="#" onclick="toggleCurtain();return false;"><img src="/image/curtain.png" alt="커튼" /><p>커튼</p></a></div>');
 
-    // 음성 명령 버튼 (엘리베이터 대신)
     if (settings.isUseVoice) {
-        $('#foot_left').append(`
-            <div>
-                <a href="#" onclick="startVoiceCommand(); return false;">
-                    <img src="/image/voice.png" alt="음성" />
-                    <p>음성</p>
-                </a>
+    $('#foot_left').append(`
+        <div>
+            <a href="#" onclick="toggleVoice(); return false;">
+                <img src="/image/voice.png" alt="음성" />
+                <p>음성</p>
+            </a>
+        </div>
+    `);
+
+    if ($('#modal').length === 0) {
+        $('body').append(`
+            <div id="modal" style="display:none;position:fixed;z-index:999;top:0;left:0;
+                width:100%;height:100%;background-color:rgba(0,0,0,0.5);backdrop-filter:blur(3px);">
+                <div class="modal-content" style="background-color:white;margin:100px auto;padding:40px 20px;
+                    border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 25px rgba(0, 0, 0, 0.3);">
+                    <div class="visualizer" style="display:flex;justify-content:center;align-items:end;height:60px;gap:6px;margin-bottom:20px;">
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;animation-delay:0.2s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;animation-delay:0.4s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;animation-delay:0.2s;"></div>
+                        <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5s infinite ease-in-out;"></div>
+                    </div>
+                    <div id="status" style="font-size:1.1em;margin-top:10px;">🎙️ 녹음 중...</div>
+                </div>
             </div>
         `);
-
-        // 모달이 없으면 body에 추가
-        if ($('#modal').length === 0) {
-            $('body').append(`
-                <div id="modal" style="display:none;position:fixed;z-index:999;top:0;left:0;
-                    width:100%;height:100%;background-color:rgba(0,0,0,0.5);backdrop-filter:blur(3px);">
-                    <div class="modal-content" style="background-color:white;margin:100px auto;padding:40px 20px;
-                        border-radius:12px;width:300px;text-align:center;box-shadow:0 10px 25px rgba(0, 0, 0, 0.3);">
-                        <div class="visualizer" style="display:flex;justify-content:center;align-items:end;height:60px;gap:6px;margin-bottom:20px;">
-                            <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;"></div>
-                            <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;animation-delay:0.2s;"></div>
-                            <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;animation-delay:0.4s;"></div>
-                            <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;animation-delay:0.2s;"></div>
-                            <div class="bar" style="width:10px;background-color:#5a5aff;border-radius:5px;animation:bounce 1s infinite ease-in-out;"></div>
-                        </div>
-                        <div id="status" style="font-size:1.1em;margin-top:10px;">🎙️ 녹음 중...</div>
-                    </div>
-                </div>
-            `);
-        }
     }
+}
+
 
     // 거울 버튼 (음성 뒤에 오도록 위치 조정)
     if (settings.isUseMirror)
