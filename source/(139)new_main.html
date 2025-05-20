@@ -36,9 +36,9 @@
 
 			if (settings.isUseBus) requestBusStopList();
 			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleLights();return false;"><img src="/image/lights.png" alt="조명" /><p>조명</p></a></div>');
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleCurtain();return false;"><img src="/image/curtain.png" alt="커튼" /><p>커튼</p></a></div>');
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleElevator();return false;"><img src="/image/elevator.png" alt="엘레베이터" /><p>엘레베이터</p></a></div>');
-			if (settings.isUseLamp) $('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
+			if (settings.isUseCurtain) $('#foot_left').append('<div><a href="#" onclick="toggleCurtain();return false;"><img src="/image/curtain.png" alt="커튼" /><p>커튼</p></a></div>');
+			if (settings.isUseEv) $('#foot_left').append('<div><a href="#" onclick="toggleElevator();return false;"><img src="/image/elevator.png" alt="엘레베이터" /><p>엘레베이터</p></a></div>');
+			if (settings.isUseMirror) $('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
 		}
 
 		function requestBusStopList() {
