@@ -21,50 +21,71 @@ async function startVoiceProcess() {
             }
 
             status.textContent = "음성 처리 중...";
-
             const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
             const formData = new FormData();
             formData.append("file", audioBlob, "voice.wav");
             formData.append("model", "whisper-1");
 
             try {
+                console.log("OpenAI API 호출 시작");
                 const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
                     method: "POST",
                     headers: {
-                        Authorization: "Bearer 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", // 키 교체 필요
+                        Authorization: "Bearer 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", // 보안상의 이유로 실제 키는 숨김
                     },
                     body: formData,
                 });
 
-                const data = await response.json();
+                console.log("OpenAI 응답 수신됨, 상태 코드:", response.status);
+                const responseText = await response.text();
+                console.log("응답 원문:", responseText);
+
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error("JSON 파싱 실패:", parseError);
+                    status.textContent = "음성 인식 결과 처리 중 오류 발생.";
+                    alert("응답 파싱 중 오류가 발생했습니다.");
+                    modal.style.display = "none";
+                    stream.getTracks().forEach(track => track.stop());
+                    return;
+                }
+
                 const text = data.text || "";
-                console.log("변환 결과:", text);
+                console.log("변환된 텍스트:", text);
                 status.textContent = `인식된 내용: ${text}`;
 
                 if (["문 열", "열어", "열"].some(trigger => text.includes(trigger))) {
                     status.textContent = "문을 여는 중...";
+                    console.log("'문 열어' 명령 감지됨, 도어 API 호출 시작");
 
-                    await fetch("https://api.hizib.wikibox.kr/Smartdoor/doorOpenProcess", {
+                    const doorResponse = await fetch("https://api.hizib.wikibox.kr/Smartdoor/doorOpenProcess", {
                         method: "POST",
                         headers: {
-                            "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiNTgiLCJleHAiOjE3NzE2NTQzOTQsInNtYXJ0ZG9vcl91c2VyX2lkIjoiMTA4Iiwic21hcnRkb29yX2lkIjoyMn0.NBYj1NUXe5p_EqciL5jHPlaR-E1IhFXb3w5GcOBfUKACIVLKOkfbYvZjKS56itRVbNDncj230unv2_--ArX1rA", // 키 교체 필요
+                            "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoiNTgiLCJleHAiOjE3NzE2NTQzOTQsInNtYXJ0ZG9vcl91c2VyX2lkIjoiMTA4Iiwic21hcnRkb29yX2lkIjoyMn0.NBYj1NUXe5p_EqciL5jHPlaR-E1IhFXb3w5GcOBfUKACIVLKOkfbYvZjKS56itRVbNDncj230unv2_--ArX1rA", // 보안 주의
                             "Content-Type": "application/json",
                             "accept": "application/json",
                         },
                         body: JSON.stringify({ door_id: "22" }),
                     });
 
+                    console.log("도어 API 응답 상태 코드:", doorResponse.status);
+                    const doorResult = await doorResponse.text();
+                    console.log("도어 응답 내용:", doorResult);
+
                     setTimeout(() => {
                         alert("문이 열렸습니다.");
                         modal.style.display = "none";
                     }, 500);
                 } else {
+                    console.log("명령어가 감지되지 않음");
                     alert("'문 열어' 같은 명령이 감지되지 않았습니다.");
                     modal.style.display = "none";
                 }
 
             } catch (apiError) {
-                console.error("API 호출 오류:", apiError);
+                console.error("OpenAI 또는 도어 API 호출 중 오류:", apiError);
                 alert("음성 인식 중 오류가 발생했습니다.");
                 modal.style.display = "none";
             }
