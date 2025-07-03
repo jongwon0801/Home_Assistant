@@ -48,11 +48,11 @@
     if (settings.isUseCurtain)
         $('#foot_left').append('<div><a href="#" onclick="toggleCurtain();return false;"><img src="/image/curtain.png" alt="커튼" /><p>커튼</p></a></div>');
     
-    // 음성 입력
+    // 뉴스 입력
     if (settings.isUseNews) 
-    $('#foot_left').append(`<div><a href="#" onclick="toggleVoice(); return false;"><img src="/image/news.png" alt="뉴스" /><p>뉴스</p></a></div>`);
+    $('#foot_left').append(`<div><a href="#" onclick="toggleNews(); return false;"><img src="/image/news.png" alt="뉴스" /><p>뉴스</p></a></div>`);
     
-    // 거울 버튼 (음성 뒤에 오도록 위치 조정)
+    // 거울 버튼 (뉴스 뒤에 오도록 위치 조정)
     if (settings.isUseMirror)
         $('#foot_left').append('<div><a href="#" onclick="toggleMirror();return false;"><img src="/image/mirror.png" alt="거울" /><p>거울</p></a></div>');
 }
