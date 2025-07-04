@@ -375,34 +375,100 @@ function toggleNews() {
 }
 
 
-
 window.toggleEco = function() {
-  const modal = document.getElementById('eco-modal');
-  const container = document.getElementById('eco-modal-body');
-  if (!modal || !container) return;
+  // #eco-modal이 없으면 생성
+  if ($('#eco-modal').length === 0) {
+    $('body').append(`
+      <div id="eco-modal">
+        <div class="eco-modal-content">
+          <span id="eco-modal-close">&times;</span>
+          <div id="eco-modal-body"><p>로딩 중...</p></div>
+        </div>
+      </div>
+    `);
+
+    // 스타일이 없으면 삽입
+    if ($('#eco-modal-style').length === 0) {
+      $('head').append(`
+        <style id="eco-modal-style">
+          #eco-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: flex;
+          }
+          .eco-modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+          }
+          #eco-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            user-select: none;
+          }
+          #eco-modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          #eco-modal-body th, #eco-modal-body td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+          }
+          #eco-modal-body th {
+            background-color: #eee;
+          }
+        </style>
+      `);
+    }
+
+    // 닫기 버튼 클릭 이벤트 등록
+    $('#eco-modal-close').on('click', function() {
+      $('#eco-modal').fadeOut(200);
+    });
+  } else {
+    // 기존 모달이 있다면 로딩 메시지 초기화
+    $('#eco-modal-body').html('<p>로딩 중...</p>');
+  }
 
   // 모달 열기
-  modal.style.display = 'flex';
-  container.innerHTML = '<p>로딩 중...</p>';
+  $('#eco-modal').fadeIn(200);
 
-  if (typeof ws !== 'undefined') {
+  // WebSocket ecoFeed 요청
+  if (typeof ws !== 'undefined' && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ request: "ecoFeed" }));
   }
 };
 
-// 웹소켓에서 ecoFeed 응답 받으면 아래 함수 호출해서 데이터 표시
+// ecoFeed 응답 데이터 처리 함수
 window.handleEcoFeedResponse = function(data) {
-  const container = document.getElementById('eco-modal-body');
-  if (!container) return;
+  const container = $('#eco-modal-body');
+  if (!container.length) return;
 
   if (data.error) {
-    container.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
+    container.html(`<p style="color:red;">❌ ${data.error}</p>`);
     return;
   }
 
   let html = `<h2>📊 일일 경제지표 (${data.date || '날짜 없음'})</h2>`;
   html += `<p>⏱ 마지막 업데이트: ${data.updated || '없음'}</p>`;
-  html += `<table style="width:100%; border-collapse: collapse;">
+  html += `<table>
       <thead><tr><th>지표</th><th>지수</th><th>변동</th><th>방향</th></tr></thead><tbody>`;
 
   const targets = ["KOSPI", "KOSDAQ", "국고채", "달러"];
@@ -423,8 +489,9 @@ window.handleEcoFeedResponse = function(data) {
   });
 
   html += `</tbody></table>`;
-  container.innerHTML = html;
+  container.html(html);
 };
+
 
 
 
