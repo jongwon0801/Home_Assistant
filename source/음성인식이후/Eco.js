@@ -37,8 +37,16 @@ if (typeof ws !== 'undefined') {
   ws.addEventListener('message', function(event) {
     try {
       const msg = JSON.parse(event.data);
+
       if (msg.response === 'ecoFeed') {
-        showEcoData(msg.data);
+        let data = msg.data;
+
+        // data가 문자열이면 JSON으로 변환
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+
+        showEcoData(data);
       }
     } catch (e) {
       console.error('ecoFeed 메시지 처리 중 오류:', e);
