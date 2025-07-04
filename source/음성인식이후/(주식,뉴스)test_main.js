@@ -425,40 +425,44 @@ function toggleEco() {
             font-size: 1em;
             padding: 10px;
           }
+          #eco-modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          #eco-modal-body th, #eco-modal-body td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+          }
+          #eco-modal-body th {
+            background-color: #eee;
+          }
         </style>
       `);
     }
 
-    // 닫기 버튼 이벤트 연결 (중복 방지 위해 document에 바인딩)
+    // 닫기 버튼 이벤트 등록 (중복 방지 위해 document에 바인딩)
     $(document).on('click', '#eco-modal-close', function () {
       $('#eco-modal').fadeOut(200);
     });
   } else {
+    // 기존 모달 초기화
     $('#eco-modal-body').html('<p>로딩 중...</p>');
   }
 
   // 모달 열기
   $('#eco-modal').fadeIn(200);
 
-  // WebSocket 요청
+  // 웹소켓 요청 보내기
   if (typeof ws !== 'undefined' && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ request: "ecoFeed" }));
   }
 
-  // 자동 닫기 (10초 후)
+  // 10초 후 모달 자동 닫기
   setTimeout(() => {
     $('#eco-modal').fadeOut(200);
   }, 10000);
-}
-
-// WebSocket 응답 핸들링
-if (typeof ws !== 'undefined') {
-  ws.onmessage = function (event) {
-    const msg = JSON.parse(event.data);
-    if (msg.response === 'ecoFeed') {
-      showEcoData(msg.data);
-    }
-  };
 }
 
 
