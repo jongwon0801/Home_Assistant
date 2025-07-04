@@ -377,102 +377,55 @@ function toggleNews() {
 
 
 window.toggleEco = function() {
-  // CSS 스타일 동적 삽입 (중복 방지용)
-  if (!document.getElementById('eco-style')) {
-    const style = document.createElement('style');
-    style.id = 'eco-style';
-    style.textContent = `
-      #eco-indicator {
-        font-family: 'Arial', sans-serif;
-        max-width: 400px;
-        margin: 10px auto;
-        background: #f9f9f9;
-        border-radius: 6px;
-        padding: 15px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        color: #333;
-      }
-      #eco-indicator .eco-title {
-        font-weight: bold;
-        font-size: 1.2em;
-        margin-bottom: 6px;
-        text-align: center;
-      }
-      #eco-indicator .eco-updated {
-        font-size: 0.9em;
-        color: #666;
-        margin-bottom: 10px;
-        text-align: center;
-      }
-      #eco-indicator table.eco-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      #eco-indicator table.eco-table th,
-      #eco-indicator table.eco-table td {
-        padding: 8px 6px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-      }
-      #eco-indicator table.eco-table th {
-        background-color: #eee;
-      }
-      #eco-indicator p {
-        text-align: center;
-        font-weight: bold;
-      }
-    `;
-    document.head.appendChild(style);
+  const modal = document.getElementById('eco-modal');
+  const container = document.getElementById('eco-modal-body');
+  if (!modal || !container) return;
+
+  // 모달 열기
+  modal.style.display = 'flex';
+  container.innerHTML = '<p>로딩 중...</p>';
+
+  if (typeof ws !== 'undefined') {
+    ws.send(JSON.stringify({ request: "ecoFeed" }));
+  }
+};
+
+// 웹소켓에서 ecoFeed 응답 받으면 아래 함수 호출해서 데이터 표시
+window.handleEcoFeedResponse = function(data) {
+  const container = document.getElementById('eco-modal-body');
+  if (!container) return;
+
+  if (data.error) {
+    container.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
+    return;
   }
 
-  fetch('/Eco/eco_data.json')
-    .then(response => {
-      if (!response.ok) throw new Error('데이터 로드 실패');
-      return response.json();
-    })
-    .then(data => {
-      const container = document.getElementById('eco-indicator');
-      if (!container) return;
+  let html = `<h2>📊 일일 경제지표 (${data.date || '날짜 없음'})</h2>`;
+  html += `<p>⏱ 마지막 업데이트: ${data.updated || '없음'}</p>`;
+  html += `<table style="width:100%; border-collapse: collapse;">
+      <thead><tr><th>지표</th><th>지수</th><th>변동</th><th>방향</th></tr></thead><tbody>`;
 
-      if (data.error) {
-        container.innerHTML = `<p style="color:red;">❌ ${data.error}</p>`;
-        return;
-      }
+  const targets = ["KOSPI", "KOSDAQ", "국고채", "달러"];
+  targets.forEach(key => {
+    const item = data[key];
+    if (!item) return;
 
-      let html = `<div class="eco-title">📊 일일 경제지표 (${data.date || '날짜 없음'})</div>`;
-      html += `<div class="eco-updated">⏱ 마지막 업데이트: ${data.updated || '없음'}</div>`;
-      html += `<table class="eco-table">
-          <thead><tr><th>지표</th><th>지수</th><th>변동</th><th>방향</th></tr></thead><tbody>`;
+    let arrow = "➡️";
+    if (item.direction.includes("▲")) arrow = "🔺";
+    else if (item.direction.includes("▼")) arrow = "🔻";
 
-      const targets = ["KOSPI", "KOSDAQ", "국고채", "달러"];
-      targets.forEach(key => {
-        const item = data[key];
-        if (!item) return;
+    html += `<tr>
+      <td>${key}</td>
+      <td>${item.index}</td>
+      <td>${item.change}</td>
+      <td>${arrow}</td>
+    </tr>`;
+  });
 
-        let arrow = "➡️";
-        if (item.direction.includes("▲")) arrow = "🔺";
-        else if (item.direction.includes("▼")) arrow = "🔻";
+  html += `</tbody></table>`;
+  container.innerHTML = html;
+};
 
-        html += `<tr>
-          <td>${key}</td>
-          <td>${item.index}</td>
-          <td>${item.change}</td>
-          <td>${arrow}</td>
-        </tr>`;
-      });
-
-      html += `</tbody></table>`;
-      container.innerHTML = html;
-    })
-    .catch(err => {
-      console.error(err);
-      const container = document.getElementById('eco-indicator');
-      if(container) container.innerHTML = `<p style="color:red;">❌ 데이터를 불러올 수 없습니다.</p>`;
-    });
-}
-
-// 페이지 로드 시 자동 호출 원하면 아래 한 줄 활성화
-// window.addEventListener('DOMContentLoaded', toggleEco);
 
 
 
