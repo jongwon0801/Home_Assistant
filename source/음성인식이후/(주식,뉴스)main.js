@@ -375,7 +375,7 @@ function toggleNews() {
 }
 
 
-window.toggleEco = function() {
+function toggleEco() {
   // #eco-modal이 없으면 생성
   if ($('#eco-modal').length === 0) {
     $('body').append(`
@@ -387,7 +387,7 @@ window.toggleEco = function() {
       </div>
     `);
 
-    // 스타일이 없으면 삽입
+    // 스타일 삽입
     if ($('#eco-modal-style').length === 0) {
       $('head').append(`
         <style id="eco-modal-style">
@@ -421,82 +421,35 @@ window.toggleEco = function() {
             cursor: pointer;
             user-select: none;
           }
-          #eco-modal-body table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-          }
-          #eco-modal-body th, #eco-modal-body td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-          }
-          #eco-modal-body th {
-            background-color: #eee;
+          #eco-modal-body {
+            font-size: 1em;
+            padding: 10px;
           }
         </style>
       `);
     }
 
-    // 닫기 버튼 클릭 이벤트 등록
-    $('#eco-modal-close').on('click', function() {
+    // 닫기 버튼 이벤트
+    $(document).on('click', '#eco-modal-close', function () {
       $('#eco-modal').fadeOut(200);
     });
   } else {
-    // 기존 모달이 있다면 로딩 메시지 초기화
     $('#eco-modal-body').html('<p>로딩 중...</p>');
   }
 
   // 모달 열기
   $('#eco-modal').fadeIn(200);
 
-  // WebSocket ecoFeed 요청
+  // WebSocket 요청
   if (typeof ws !== 'undefined' && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ request: "ecoFeed" }));
   }
-};
 
-// ecoFeed 응답 데이터 처리 함수
-window.handleEcoFeedResponse = function(data) {
-  const container = $('#eco-modal-body');
-  if (!container.length) return;
-
-  if (data.error) {
-    container.html(`<p style="color:red;">❌ ${data.error}</p>`);
-    return;
-  }
-
-  let html = `<h2>📊 일일 경제지표 (${data.date || '날짜 없음'})</h2>`;
-  html += `<p>⏱ 마지막 업데이트: ${data.updated || '없음'}</p>`;
-  html += `<table>
-      <thead><tr><th>지표</th><th>지수</th><th>변동</th><th>방향</th></tr></thead><tbody>`;
-
-  const targets = ["KOSPI", "KOSDAQ", "국고채", "달러"];
-  targets.forEach(key => {
-    const item = data[key];
-    if (!item) return;
-
-    let arrow = "➡️";
-    if (item.direction.includes("▲")) arrow = "🔺";
-    else if (item.direction.includes("▼")) arrow = "🔻";
-
-    html += `<tr>
-      <td>${key}</td>
-      <td>${item.index}</td>
-      <td>${item.change}</td>
-      <td>${arrow}</td>
-    </tr>`;
-  });
-
-  html += `</tbody></table>`;
-  container.html(html);
-};
-
-
-
-
-
-
+  // 자동 닫기 (10초 후)
+  setTimeout(() => {
+    $('#eco-modal').fadeOut(200);
+  }, 10000);
+}
 
 
 function toggleMirror() {
