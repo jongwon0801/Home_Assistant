@@ -375,8 +375,8 @@ function toggleNews() {
 }
 
 
+
 function toggleEco() {
-  // #eco-modal이 없으면 생성
   if ($('#eco-modal').length === 0) {
     $('body').append(`
       <div id="eco-modal">
@@ -387,7 +387,6 @@ function toggleEco() {
       </div>
     `);
 
-    // 스타일 삽입
     if ($('#eco-modal-style').length === 0) {
       $('head').append(`
         <style id="eco-modal-style">
@@ -396,30 +395,38 @@ function toggleEco() {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0, 0, 0, 0.75); /* 더 짙은 반투명 검정 */
             justify-content: center;
             align-items: center;
             z-index: 9999;
             display: flex;
           }
           .eco-modal-content {
-            background: #fff;
+            background: #1e1e2f; /* 짙은 네이비 블루 톤 */
+            color: #ddd;         /* 연한 회색 글자 */
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             width: 90%;
             max-width: 600px;
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            box-shadow: 0 0 15px rgba(50, 50, 100, 0.7);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           }
           #eco-modal-close {
             position: absolute;
             top: 10px;
             right: 15px;
-            font-size: 28px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #aaa;
             cursor: pointer;
             user-select: none;
+            transition: color 0.3s ease;
+          }
+          #eco-modal-close:hover {
+            color: #fff;
           }
           #eco-modal-body {
             font-size: 1em;
@@ -429,41 +436,44 @@ function toggleEco() {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            color: #ddd;
           }
           #eco-modal-body th, #eco-modal-body td {
-            border: 1px solid #ddd;
+            border: 1px solid #444;
             padding: 8px;
             text-align: center;
           }
           #eco-modal-body th {
-            background-color: #eee;
+            background-color: #2c2c42;
+          }
+          #eco-modal-body tr:nth-child(even) {
+            background-color: #2a2a3e;
+          }
+          #eco-modal-body tr:nth-child(odd) {
+            background-color: #242437;
           }
         </style>
       `);
     }
 
-    // 닫기 버튼 이벤트 등록 (중복 방지 위해 document에 바인딩)
     $(document).on('click', '#eco-modal-close', function () {
       $('#eco-modal').fadeOut(200);
     });
   } else {
-    // 기존 모달 초기화
     $('#eco-modal-body').html('<p>로딩 중...</p>');
   }
 
-  // 모달 열기
   $('#eco-modal').fadeIn(200);
 
-  // 웹소켓 요청 보내기
   if (typeof ws !== 'undefined' && ws.readyState === WebSocket.OPEN) {
     ws.send(JSON.stringify({ request: "ecoFeed" }));
   }
 
-  // 10초 후 모달 자동 닫기
   setTimeout(() => {
     $('#eco-modal').fadeOut(200);
   }, 10000);
 }
+
 
 
 function toggleMirror() {
