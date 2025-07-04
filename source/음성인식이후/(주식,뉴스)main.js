@@ -376,7 +376,7 @@ function toggleNews() {
 
 
 
-function toggleEco() {
+window.toggleEco = function() {
   // CSS 스타일 동적 삽입 (중복 방지용)
   if (!document.getElementById('eco-style')) {
     const style = document.createElement('style');
