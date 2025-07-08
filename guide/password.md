@@ -30,3 +30,24 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlNTE0YjYzOTE5NTQ0MjA4YTBkMTNmN2U
 ```
 
 
+#### Home-Assistant (BEXCO)
+```less
+# IPv4 주소
+192.168.1.4
+
+192.168.1.4/24
+
+# IPv6 주소
+fe80::b275:ff7:dd99:57d1/64
+
+# Home Assistant URL
+http://homeassistant.local:8123
+
+# Observer URL
+http://homeassistant.local:4357
+
+# web 사용자 계정
+id : wikibox
+
+pw : wiki6564@
+```
