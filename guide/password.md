@@ -46,8 +46,20 @@ http://homeassistant.local:8123
 # Observer URL
 http://homeassistant.local:4357
 
-# web 사용자 계정
+# web 홈어시스턴트 사용자 계정
 id : wikibox
-
 pw : wiki6564@
+
+# 서브 위키박스 벡스코 공유기
+관리자페이지 192.168.1.1
+id : wikibox
+pw : wiki6564
+
+# 위키박스 벡스코 ssid(와이파이5GHz)
+id : WIKIBOX_BEXCO
+pw : 10123333
+
+# 위키박스 벡스코
+와이파이 이름 : iptime (2.4Hz)
+비밀번호 없음
 ```
