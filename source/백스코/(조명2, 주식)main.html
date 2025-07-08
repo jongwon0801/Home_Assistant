@@ -46,13 +46,12 @@
 
     // 뉴스 입력
     if (settings.isUseFeed) 
-    $('#foot_left').append(`<div><a href="#" onclick="toggleFeed(); return false;"><img src="/image/feed.png" alt="간식주기" /><p>간식주기</p></a></div>`);
-      
-      
-    // 경제 버튼
+    $('#foot_left').append(`<div><a href="#" onclick="toggleFeed(); return false;"><img src="/image/feed.png" alt="간식주기" /><p>간식주기</p></a></div>`);      
+
+
     if (settings.isUseEco)
-        $('#foot_left').append('<div><a href="#" onclick="toggleEco();return false;"><img src="/image/eco.png" alt="주가지수" /><p>주가지수</p></a></div>');
-    
+    $('#foot_left').append('<div><a href="#" onclick="toggleEco();return false;"><img src="/image/eco.png" alt="주가지수" style="margin-left:5px;" /><p>주가지수</p></a></div>');
+			
     
     // 거울 버튼 (뉴스 뒤에 오도록 위치 조정)
     if (settings.isUseMirror)
