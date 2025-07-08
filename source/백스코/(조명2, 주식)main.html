@@ -33,7 +33,7 @@
     // 기본값 설정
     if (settings.isUseLamp === undefined) settings.isUseLamp = true;
     if (settings.isUseEco === undefined) settings.isUseEco = true;
-    if (settings.isUsefeed === undefined) settings.isUsefeed = true;  // 변수명 수정
+    if (settings.isUseFeed === undefined) settings.isUseFeed = true;  // 변수명 수정
     if (settings.isUseMirror === undefined) settings.isUseMirror = true;
     if (settings.isUseBus === undefined) settings.isUseBus = true;
 
@@ -45,7 +45,7 @@
         $('#foot_left').append('<div><a href="#" onclick="toggleLights();return false;"><img src="/image/lights.png" alt="조명" /><p>조명</p></a></div>');
 
     // 뉴스 입력
-    if (settings.isUseNews) 
+    if (settings.isUseFeed) 
     $('#foot_left').append(`<div><a href="#" onclick="toggleFeed(); return false;"><img src="/image/feed.png" alt="간식주기" /><p>간식주기</p></a></div>`);
       
       
