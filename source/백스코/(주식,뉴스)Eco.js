@@ -17,9 +17,9 @@ function showEcoData(data) {
     const item = data[key];
     if (!item) return;
 
-    let arrow = "➡️";
-    if (item.direction.includes("상승")) arrow = "🔺";
-    else if (item.direction.includes("하락")) arrow = "🔻";
+    let arrow = "equal.png";
+    if (item.direction.includes("상승")) arrow = "up.png";
+    else if (item.direction.includes("하락")) arrow = "down.png";
 
     html += `<tr>
       <td>${key}</td>
