@@ -1,5 +1,5 @@
 async function checkFeedStatus() {
-  const url = 'http://192.168.1.4:8123/api/states/smart_plug_socket_1';
+  const url = 'http://192.168.1.4:8123/api/states/switch.smart_plug_socket_1';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlNTE0YjYzOTE5NTQ0MjA4YTBkMTNmN2U4NmEzNzg2OSIsImlhdCI6MTc0Mzc0OTc5NiwiZXhwIjoyMDU5MTA5Nzk2fQ.DJ2qYGtzHOxUg0KEI462HkFKkrazV-npGVM1By_y8Os';
 
   console.log(url);
@@ -35,7 +35,7 @@ async function checkFeedStatus() {
 async function turnOnFeed() {
   const url = 'http://192.168.1.4:8123/api/services/switch/turn_on';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlNTE0YjYzOTE5NTQ0MjA4YTBkMTNmN2U4NmEzNzg2OSIsImlhdCI6MTc0Mzc0OTc5NiwiZXhwIjoyMDU5MTA5Nzk2fQ.DJ2qYGtzHOxUg0KEI462HkFKkrazV-npGVM1By_y8Os';
-  const entityId = 'smart_plug_socket_1';
+  const entityId = 'switch.smart_plug_socket_1';
 
   console.log(url);
 
@@ -73,7 +73,7 @@ async function turnOnFeed() {
 async function turnOffFeed() {
   const url = 'http://192.168.1.4:8123/api/services/switch/turn_off';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJlNTE0YjYzOTE5NTQ0MjA4YTBkMTNmN2U4NmEzNzg2OSIsImlhdCI6MTc0Mzc0OTc5NiwiZXhwIjoyMDU5MTA5Nzk2fQ.DJ2qYGtzHOxUg0KEI462HkFKkrazV-npGVM1By_y8Os';
-  const entityId = 'smart_plug_socket_1';
+  const entityId = 'switch.smart_plug_socket_1';
   console.log(url);
 
   try {
