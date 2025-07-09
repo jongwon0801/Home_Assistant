@@ -5,7 +5,7 @@ function showEcoData(data) {
   if (!container.length) return;
 
   if (data.error) {
-    container.html(`<p style="color:red;">❌ ${data.error}</p>`);
+    container.html(`<p style="color:red;"> ${data.error}</p>`);
     return;
   }
 
@@ -18,14 +18,14 @@ function showEcoData(data) {
     if (!item) return;
 
     let arrow = "equal.png";
-    if (item.direction.includes("상승")) arrow = "up.png";
-    else if (item.direction.includes("하락")) arrow = "down.png";
+    if (item.direction && item.direction.includes("상승")) arrow = "up.png";
+    else if (item.direction && item.direction.includes("하락")) arrow = "down.png";
 
     html += `<tr>
       <td>${key}</td>
       <td>${item.index}</td>
       <td>${item.change}</td>
-      <td>${arrow}</td>
+      <td><img src="/image/${arrow}" alt="방향" style="width:16px; height:16px;"></td>
     </tr>`;
   });
 
