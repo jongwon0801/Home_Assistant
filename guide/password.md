@@ -55,11 +55,11 @@ pw : wiki6564@
 id : wikibox
 pw : wiki6564
 
-# 위키박스 벡스코 ssid(와이파이5GHz)
-id : WIKIBOX_BEXCO
+# 위키박스 벡스코 (와이파이5GHz)
+와이파이 이름 : wikibox
 pw : 10123333
 
-# 위키박스 벡스코
-와이파이 이름 : iptime (2.4Hz)
-비밀번호 없음
+# 위키박스 벡스코 (와이파이2.4GHz)
+와이파이 이름 : WIKIBOX_BEXCO
+pw : 10123333
 ```
