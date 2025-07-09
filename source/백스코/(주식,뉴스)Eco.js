@@ -9,7 +9,7 @@ function showEcoData(data) {
     return;
   }
 
-  let html = `<h2>📊 경제지표 (${data.updated || '정보 없음'})</h2><table>
+  let html = `<h2>경제지표 (${data.updated || '정보 없음'})</h2><table>
     <thead><tr><th>지표</th><th>지수</th><th>변동</th><th>방향</th></tr></thead><tbody>`;
 
   const targets = ["KOSPI", "KOSDAQ", "국고채(3년)", "달러-원"];
