@@ -15,7 +15,7 @@ function showEcoData(data) {
     const item = data[key];
     if (!item) return;
 
-    let arrowImg = "right.png";
+    let arrowImg = "equal.png";
     if (item.direction.includes("상승")) arrowImg = "up.png";
     else if (item.direction.includes("하락")) arrowImg = "down.png";
 
@@ -29,4 +29,26 @@ function showEcoData(data) {
 
   html += `</tbody></table>`;
   container.html(html);
+}
+
+// 웹소켓 메시지 이벤트 등록 (중복 방지용)
+if (typeof ws !== 'undefined') {
+  ws.addEventListener('message', function(event) {
+    try {
+      const msg = JSON.parse(event.data);
+
+      if (msg.response === 'ecoFeed') {
+        let data = msg.data;
+
+        // data가 문자열이면 JSON으로 변환
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+
+        showEcoData(data);
+      }
+    } catch (e) {
+      console.error('ecoFeed 메시지 처리 중 오류:', e);
+    }
+  });
 }
