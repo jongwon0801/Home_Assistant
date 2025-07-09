@@ -62,4 +62,16 @@ pw : 10123333
 # 위키박스 벡스코 (와이파이2.4GHz)
 와이파이 이름 : WIKIBOX_BEXCO
 pw : 10123333
+
+# 스마트 도어 고정 ip
+192.168.1.3
+
+# 스마트 도어 홈어시스턴트 ip
+192.168.1.4
+
+# 플러그 1 구성요소 id
+switch.smart_plug_socket_1_2
+
+# 플러그 2 구성요소 id
+switch.smart_plug_socket_1
 ```
