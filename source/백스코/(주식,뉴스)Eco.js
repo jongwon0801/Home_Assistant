@@ -1,5 +1,5 @@
 // ecoFeed 응답 처리 함수
-// /home/pi/www/python/elcsoft/controller/ws
+// /home/pi/www/js/Eco.js
 function showEcoData(data) {
   const container = $('#eco-modal-body');
   if (!container.length) return;
