@@ -1,9 +1,11 @@
+// ecoFeed 응답 처리 함수
+// /home/pi/www/js/Eco.js
 function showEcoData(data) {
   const container = $('#eco-modal-body');
   if (!container.length) return;
 
   if (data.error) {
-    container.html(`<p style="color:red;">❌ ${data.error}</p>`);
+    container.html(`<p style="color:red;"> ${data.error}</p>`);
     return;
   }
 
@@ -15,15 +17,15 @@ function showEcoData(data) {
     const item = data[key];
     if (!item) return;
 
-    let arrowImg = "equal.png";
-    if (item.direction.includes("상승")) arrowImg = "up.png";
-    else if (item.direction.includes("하락")) arrowImg = "down.png";
+    let arrow = "equal.png";
+    if (item.direction && item.direction.includes("상승")) arrow = "up.png";
+    else if (item.direction && item.direction.includes("하락")) arrow = "down.png";
 
     html += `<tr>
       <td>${key}</td>
       <td>${item.index}</td>
       <td>${item.change}</td>
-      <td><img src="/image/${arrowImg}" alt="${item.direction}" style="width:16px;height:16px;" /></td>
+      <td><img src="/image/${arrow}" alt="방향" style="width:16px; height:16px;"></td>
     </tr>`;
   });
 
