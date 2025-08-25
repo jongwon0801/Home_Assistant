@@ -35,7 +35,7 @@ async function checkLampStatus() {
 async function turnOnLamp() {
   const url = 'http://192.168.0.42:8123/api/services/switch/turn_on';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxYTdiNzg3MmFiODc0MmYwOGQxNGM4ZTk0MjYyMzI1MSIsImlhdCI6MTc1NjA5ODI2NywiZXhwIjoyMDcxNDU4MjY3fQ.x7e2-LG9TPtevFLE1cpHnU-6IbKSC-P6kOQqQbuCwtk';
-  const entityId = 'switch.smart_plug_socket_1_2';
+  const entityId = 'switch.wifi_smart_switch_switch_1';
 
   console.log(url);
 
@@ -74,7 +74,7 @@ async function turnOnLamp() {
 async function turnOffLamp() {
   const url = 'http://192.168.0.42:8123/api/services/switch/turn_off';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxYTdiNzg3MmFiODc0MmYwOGQxNGM4ZTk0MjYyMzI1MSIsImlhdCI6MTc1NjA5ODI2NywiZXhwIjoyMDcxNDU4MjY3fQ.x7e2-LG9TPtevFLE1cpHnU-6IbKSC-P6kOQqQbuCwtk'
-  const entityId = 'switch.smart_plug_socket_1_2';
+  const entityId = 'switch.wifi_smart_switch_switch_1';
   console.log(url);
 
   try {
