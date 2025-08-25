@@ -1,5 +1,5 @@
 async function checkFeedStatus() {
-  const url = 'http://192.168.0.42:8123/api/switch.wifi_smart_switch_switch_2';
+  const url = 'http://192.168.0.42:8123/api/states/switch.wifi_smart_switch_switch_2';
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIxYTdiNzg3MmFiODc0MmYwOGQxNGM4ZTk0MjYyMzI1MSIsImlhdCI6MTc1NjA5ODI2NywiZXhwIjoyMDcxNDU4MjY3fQ.x7e2-LG9TPtevFLE1cpHnU-6IbKSC-P6kOQqQbuCwtk';
 
   console.log(url);
